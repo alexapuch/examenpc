@@ -18,7 +18,7 @@ export default function ResultScreen({ answers, userInfo, onRestart }) {
   const totalCorrect = sectionResults.reduce((sum, s) => sum + s.correct, 0);
   const totalQuestions = sectionResults.reduce((sum, s) => sum + s.total, 0);
   const overallPercentage = Math.round((totalCorrect / totalQuestions) * 100);
-  const passed = overallPercentage >= PASSING_SCORE;
+  const improved = overallPercentage >= PASSING_SCORE;
 
   useEffect(() => {
     if (submitted.current || !SCRIPT_URL) return;
@@ -35,7 +35,7 @@ export default function ResultScreen({ answers, userInfo, onRestart }) {
         score: overallPercentage,
         correct: totalCorrect,
         total: totalQuestions,
-        passed,
+        passed: improved,
       }),
     }).catch(() => {
       // silently ignore — result already shown to user
@@ -61,15 +61,12 @@ export default function ResultScreen({ answers, userInfo, onRestart }) {
         </div>
 
         {/* Overall result */}
-        <div className={`result-banner ${passed ? 'passed' : 'failed'}`}>
-          <div className="result-emoji">{passed ? '✅' : '❌'}</div>
-          <h2>{passed ? '¡Aprobado!' : 'No aprobado'}</h2>
+        <div className={`result-banner ${improved ? 'passed' : 'failed'}`}>
+          <div className="result-emoji">{improved ? '📈' : '📉'}</div>
+          <h2>{improved ? '¡Buen dominio del tema!' : 'Área de oportunidad'}</h2>
           <div className="result-score">{overallPercentage}%</div>
           <p className="result-detail">
             {totalCorrect} de {totalQuestions} respuestas correctas
-          </p>
-          <p className="result-threshold">
-            Calificación mínima: {PASSING_SCORE}%
           </p>
         </div>
 
@@ -85,7 +82,7 @@ export default function ResultScreen({ answers, userInfo, onRestart }) {
               <div className="section-result-bar-wrap">
                 <div className="section-result-bar">
                   <div
-                    className={`section-result-fill ${sr.percentage >= PASSING_SCORE ? 'bar-pass' : 'bar-fail'}`}
+                    className={`section-result-fill ${sr.percentage >= 50 ? 'bar-pass' : 'bar-fail'}`}
                     style={{ width: `${sr.percentage}%` }}
                   />
                 </div>

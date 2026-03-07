@@ -1,4 +1,4 @@
-export const PASSING_SCORE = 70; // porcentaje mínimo para aprobar
+export const PASSING_SCORE = 50; // umbral diagnóstico: más de la mitad correctas = mejoró
 
 export const sections = [
   {
