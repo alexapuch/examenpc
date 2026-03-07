@@ -1,6 +1,10 @@
+import { useEffect } from 'react';
 import QuestionCard from './QuestionCard';
 
 export default function SectionExam({ section, sectionIndex, totalSections, answers, onAnswer, onNext, onPrev, isFirst, isLast }) {
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [sectionIndex]);
   const unanswered = section.questions.filter((q) => answers[q.id] === undefined).length;
   const canAdvance = unanswered === 0;
 
