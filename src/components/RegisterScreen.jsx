@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { sections, PASSING_SCORE } from '../data/examData';
 
 // Formato oficial CURP mexicana: 18 caracteres
-const CURP_REGEX = /^[A-Z]{4}\d{6}[HM][A-Z]{2}[B-DF-HJ-NP-TV-Z]{3}[0-9A-Z]$/;
+const CURP_REGEX = /^[A-Z]{4}\d{6}[HM][A-Z]{2}[A-Z]{3}[0-9A-Z]$/;
 
 export default function RegisterScreen({ onStart }) {
   const [form, setForm] = useState({ name: '', curp: '', company: '', examType: 'inicial' });
