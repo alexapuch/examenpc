@@ -26,6 +26,7 @@ export default function ResultScreen({ answers, userInfo, onRestart }) {
 
     fetch(SCRIPT_URL, {
       method: 'POST',
+      mode: 'no-cors',
       body: JSON.stringify({
         name: userInfo.name,
         curp: userInfo.curp,
