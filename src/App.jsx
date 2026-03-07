@@ -6,6 +6,8 @@ import ResultScreen from './components/ResultScreen';
 
 const PHASE = { REGISTER: 'register', EXAM: 'exam', RESULT: 'result' };
 
+const SAVED_USER_KEY = 'examenpc_user';
+
 export default function App() {
   const [phase, setPhase] = useState(PHASE.REGISTER);
   const [userInfo, setUserInfo] = useState(null);
@@ -13,6 +15,7 @@ export default function App() {
   const [answers, setAnswers] = useState({});
 
   function handleStart(info) {
+    localStorage.setItem(SAVED_USER_KEY, JSON.stringify({ name: info.name, curp: info.curp, company: info.company }));
     setUserInfo(info);
     setPhase(PHASE.EXAM);
   }

@@ -4,8 +4,11 @@ import { sections, PASSING_SCORE } from '../data/examData';
 // Formato oficial CURP mexicana: 18 caracteres
 const CURP_REGEX = /^[A-Z]{4}\d{6}[HM][A-Z0-9]{7}$/;
 
+const SAVED_USER_KEY = 'examenpc_user';
+
 export default function RegisterScreen({ onStart }) {
-  const [form, setForm] = useState({ name: '', curp: '', company: '', examType: 'inicial' });
+  const saved = (() => { try { return JSON.parse(localStorage.getItem(SAVED_USER_KEY) || 'null'); } catch { return null; } })();
+  const [form, setForm] = useState({ name: saved?.name || '', curp: saved?.curp || '', company: saved?.company || '', examType: 'inicial' });
   const [errors, setErrors] = useState({});
   const totalQuestions = sections.reduce((sum, s) => sum + s.questions.length, 0);
 
