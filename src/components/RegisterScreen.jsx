@@ -54,7 +54,7 @@ export default function RegisterScreen({ onStart }) {
       <div className="start-card">
         <div className="start-header">
           <h1>Examen de Seguridad y Prevención</h1>
-          <p className="start-subtitle">Complete sus datos para comenzar — {totalQuestions} preguntas · Mínimo {PASSING_SCORE}%</p>
+          <p className="start-subtitle">Complete sus datos para comenzar — {totalQuestions} preguntas</p>
         </div>
 
         <form onSubmit={handleSubmit} className="register-form" noValidate>
