@@ -15,7 +15,8 @@ export default function App() {
   const [answers, setAnswers] = useState({});
 
   function handleStart(info) {
-    localStorage.setItem(SAVED_USER_KEY, JSON.stringify({ name: info.name, curp: info.curp, company: info.company }));
+    const today = new Date().toISOString().slice(0, 10);
+    localStorage.setItem(SAVED_USER_KEY, JSON.stringify({ name: info.name, curp: info.curp, company: info.company, date: today }));
     setUserInfo(info);
     setPhase(PHASE.EXAM);
   }

@@ -7,7 +7,14 @@ const CURP_REGEX = /^[A-Z]{4}\d{6}[HM][A-Z0-9]{7}$/;
 const SAVED_USER_KEY = 'examenpc_user';
 
 export default function RegisterScreen({ onStart }) {
-  const saved = (() => { try { return JSON.parse(localStorage.getItem(SAVED_USER_KEY) || 'null'); } catch { return null; } })();
+  const saved = (() => {
+    try {
+      const data = JSON.parse(localStorage.getItem(SAVED_USER_KEY) || 'null');
+      if (!data) return null;
+      const today = new Date().toISOString().slice(0, 10);
+      return data.date === today ? data : null;
+    } catch { return null; }
+  })();
   const [form, setForm] = useState({ name: saved?.name || '', curp: saved?.curp || '', company: saved?.company || '', examType: 'inicial' });
   const [errors, setErrors] = useState({});
   const totalQuestions = sections.reduce((sum, s) => sum + s.questions.length, 0);
