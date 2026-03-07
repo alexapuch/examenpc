@@ -1,15 +1,21 @@
 import { useState } from 'react';
 import { sections } from './data/examData';
-import StartScreen from './components/StartScreen';
+import RegisterScreen from './components/RegisterScreen';
 import SectionExam from './components/SectionExam';
 import ResultScreen from './components/ResultScreen';
 
-const PHASE = { START: 'start', EXAM: 'exam', RESULT: 'result' };
+const PHASE = { REGISTER: 'register', EXAM: 'exam', RESULT: 'result' };
 
 export default function App() {
-  const [phase, setPhase] = useState(PHASE.START);
+  const [phase, setPhase] = useState(PHASE.REGISTER);
+  const [userInfo, setUserInfo] = useState(null);
   const [currentSection, setCurrentSection] = useState(0);
   const [answers, setAnswers] = useState({});
+
+  function handleStart(info) {
+    setUserInfo(info);
+    setPhase(PHASE.EXAM);
+  }
 
   function handleAnswer(questionId, optionIndex) {
     setAnswers((prev) => ({ ...prev, [questionId]: optionIndex }));
@@ -35,14 +41,15 @@ export default function App() {
   function handleRestart() {
     setAnswers({});
     setCurrentSection(0);
-    setPhase(PHASE.START);
+    setUserInfo(null);
+    setPhase(PHASE.REGISTER);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   return (
     <div className="app">
-      {phase === PHASE.START && (
-        <StartScreen onStart={() => setPhase(PHASE.EXAM)} />
+      {phase === PHASE.REGISTER && (
+        <RegisterScreen onStart={handleStart} />
       )}
 
       {phase === PHASE.EXAM && (
@@ -60,7 +67,7 @@ export default function App() {
       )}
 
       {phase === PHASE.RESULT && (
-        <ResultScreen answers={answers} onRestart={handleRestart} />
+        <ResultScreen answers={answers} userInfo={userInfo} onRestart={handleRestart} />
       )}
     </div>
   );

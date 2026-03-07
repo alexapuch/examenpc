@@ -1,7 +1,11 @@
+import { useEffect, useRef } from 'react';
 import { sections, PASSING_SCORE } from '../data/examData';
 
-export default function ResultScreen({ answers, onRestart }) {
-  // Calculate results per section and overall
+const SCRIPT_URL = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
+
+export default function ResultScreen({ answers, userInfo, onRestart }) {
+  const submitted = useRef(false);
+
   const sectionResults = sections.map((section) => {
     const correct = section.questions.filter(
       (q) => answers[q.id] === q.correct
@@ -16,9 +20,45 @@ export default function ResultScreen({ answers, onRestart }) {
   const overallPercentage = Math.round((totalCorrect / totalQuestions) * 100);
   const passed = overallPercentage >= PASSING_SCORE;
 
+  useEffect(() => {
+    if (submitted.current || !SCRIPT_URL) return;
+    submitted.current = true;
+
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        name: userInfo.name,
+        curp: userInfo.curp,
+        company: userInfo.company,
+        examType: userInfo.examType,
+        score: overallPercentage,
+        correct: totalCorrect,
+        total: totalQuestions,
+        passed,
+      }),
+    }).catch(() => {
+      // silently ignore — result already shown to user
+    });
+  }, []);
+
+  const examLabel = userInfo.examType === 'inicial' ? 'Examen Inicial' : 'Examen Final';
+
   return (
     <div className="result-screen">
       <div className="result-card">
+        {/* User info strip */}
+        <div className="result-user-strip">
+          <div className="result-user-row">
+            <span className="result-user-name">{userInfo.name}</span>
+            <span className={`exam-type-badge ${userInfo.examType}`}>{examLabel}</span>
+          </div>
+          <div className="result-user-meta">
+            <span>{userInfo.curp}</span>
+            <span className="meta-sep">·</span>
+            <span>{userInfo.company}</span>
+          </div>
+        </div>
+
         {/* Overall result */}
         <div className={`result-banner ${passed ? 'passed' : 'failed'}`}>
           <div className="result-emoji">{passed ? '✅' : '❌'}</div>
@@ -57,7 +97,7 @@ export default function ResultScreen({ answers, onRestart }) {
         </div>
 
         <button className="btn-restart" onClick={onRestart}>
-          Intentar de nuevo
+          Nuevo examen
         </button>
       </div>
     </div>
