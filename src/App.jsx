@@ -15,6 +15,7 @@ export default function App() {
   const [userInfo, setUserInfo] = useState(null);
   const [currentSection, setCurrentSection] = useState(0);
   const [answers, setAnswers] = useState({});
+  const [defaultExamType, setDefaultExamType] = useState('inicial');
 
   // Persist exam progress while in exam phase
   useEffect(() => {
@@ -75,6 +76,7 @@ export default function App() {
 
   function handleRestart() {
     localStorage.removeItem(SAVED_PROGRESS_KEY);
+    setDefaultExamType(userInfo?.examType === 'inicial' ? 'final' : 'inicial');
     setAnswers({});
     setCurrentSection(0);
     setUserInfo(null);
@@ -85,7 +87,7 @@ export default function App() {
   return (
     <div className="app">
       {phase === PHASE.REGISTER && (
-        <RegisterScreen onStart={handleStart} />
+        <RegisterScreen onStart={handleStart} defaultExamType={defaultExamType} />
       )}
 
       {phase === PHASE.EXAM && (

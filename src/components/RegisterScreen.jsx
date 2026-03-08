@@ -7,7 +7,7 @@ const CURP_REGEX = /^[A-Z]{4}\d{6}[HM][A-Z0-9]{7}$/;
 const SAVED_USER_KEY = 'examenpc_user';
 const COMPLETED_KEY = 'examenpc_completed';
 
-export default function RegisterScreen({ onStart }) {
+export default function RegisterScreen({ onStart, defaultExamType = 'inicial' }) {
   const saved = (() => {
     try {
       const data = JSON.parse(localStorage.getItem(SAVED_USER_KEY) || 'null');
@@ -16,7 +16,7 @@ export default function RegisterScreen({ onStart }) {
       return data.date === today ? data : null;
     } catch { return null; }
   })();
-  const [form, setForm] = useState({ name: saved?.name || '', curp: saved?.curp || '', company: saved?.company || '', examType: 'inicial' });
+  const [form, setForm] = useState({ name: saved?.name || '', curp: saved?.curp || '', company: saved?.company || '', examType: defaultExamType });
   const [errors, setErrors] = useState({});
   const totalQuestions = sections.reduce((sum, s) => sum + s.questions.length, 0);
 
