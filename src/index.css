@@ -869,9 +869,9 @@ body {
    CORPORATE FOOTER
 ═══════════════════════════════════════ */
 .corp-footer {
-  margin-top: 48px;
+  margin-top: 24px;
   border-top: 1px solid var(--gray-200);
-  padding: 20px 16px 12px;
+  padding: 10px 16px 8px;
   text-align: center;
 }
 
@@ -880,10 +880,10 @@ body {
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 6px;
-  font-size: 0.8rem;
+  gap: 4px;
+  font-size: 0.72rem;
   color: var(--gray-400);
-  margin-bottom: 6px;
+  margin-bottom: 3px;
 }
 
 .corp-footer-brand {
@@ -895,11 +895,11 @@ body {
 .corp-footer-sep { color: var(--gray-200); }
 
 .corp-footer-legal {
-  font-size: 0.72rem;
+  font-size: 0.65rem;
   color: var(--gray-400);
   max-width: 500px;
   margin: 0 auto;
-  line-height: 1.5;
+  line-height: 1.4;
 }
 
 /* ── Responsive ── */
