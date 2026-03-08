@@ -12,7 +12,7 @@
   --gray-200:#e5e7eb;
   --gray-400:#9ca3af;
   --gray-600:#4b5563;
-  --gray-800:#1f2937;
+  --gray-800:#0f172a;
   --white:   #ffffff;
   --radius:  12px;
   --shadow:  0 4px 24px rgba(0,0,0,.10);
@@ -24,11 +24,25 @@ html {
 }
 
 body {
-  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  font-feature-settings: 'kern' 1, 'liga' 1;
   background: linear-gradient(150deg, #dbeafe 0%, #f0f4ff 45%, #fee2e2 100%);
   min-height: 100vh;
   color: var(--gray-800);
   line-height: 1.6;
+}
+
+/* ── Screen entrance animation ── */
+@keyframes screenEnter {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.start-screen,
+.welcome-screen,
+.section-exam,
+.result-screen {
+  animation: screenEnter 0.25s ease forwards;
 }
 
 /* ── App shell ── */
@@ -46,6 +60,14 @@ body {
   color: var(--white);
   margin: 0 -16px 28px;
   box-shadow: 0 2px 12px rgba(0,0,0,.18);
+  transition: box-shadow .25s ease;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.brand-header.scrolled {
+  box-shadow: 0 4px 20px rgba(0,0,0,.30);
 }
 
 .brand-logo {
@@ -178,10 +200,12 @@ body {
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background .2s;
+  transition: background .2s, transform .1s, box-shadow .2s;
+  box-shadow: 0 2px 8px rgba(26,86,219,.25);
 }
 
-.btn-start:hover { background: var(--blue-dk); }
+.btn-start:hover  { background: var(--blue-dk); box-shadow: 0 4px 14px rgba(26,86,219,.35); }
+.btn-start:active { transform: scale(0.97); }
 
 /* ═══════════════════════════════════════
    SECTION EXAM
@@ -199,13 +223,26 @@ body {
   margin-bottom: 20px;
 }
 
+.section-progress-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
 .section-progress-label {
   font-size: 0.8rem;
   color: var(--gray-400);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: .05em;
-  margin-bottom: 10px;
+}
+
+.section-progress-pct {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--blue-dk);
+  letter-spacing: .02em;
 }
 
 .section-title-row {
@@ -240,7 +277,7 @@ body {
 
 .section-progress-fill {
   height: 100%;
-  background: var(--blue);
+  background: linear-gradient(90deg, var(--blue-dk), var(--blue));
   border-radius: 3px;
   transition: width .4s ease;
 }
@@ -258,6 +295,8 @@ body {
   border-radius: var(--radius);
   box-shadow: 0 2px 10px rgba(0,0,0,.07);
   padding: 24px 28px;
+  border: 2px solid transparent;
+  transition: border-color .15s;
 }
 
 .question-header {
@@ -298,9 +337,10 @@ body {
   border-radius: 8px;
   cursor: pointer;
   text-align: left;
-  transition: border-color .15s, background .15s;
+  transition: border-color .15s, background .15s, box-shadow .15s, transform .1s;
   font-size: 0.93rem;
   color: var(--gray-800);
+  font-family: inherit;
 }
 
 .option-btn:hover:not(.selected) {
@@ -308,11 +348,16 @@ body {
   background: #eff6ff;
 }
 
+.option-btn:active {
+  transform: scale(0.99);
+}
+
 .option-btn.selected {
   border-color: var(--blue);
   background: #dbeafe;
   color: var(--blue-dk);
   font-weight: 600;
+  box-shadow: 0 0 0 3px rgba(26,86,219,.10);
 }
 
 .option-letter {
@@ -354,8 +399,11 @@ body {
   font-weight: 600;
   cursor: pointer;
   border: none;
-  transition: background .2s, opacity .2s;
+  transition: background .2s, transform .1s, opacity .2s;
+  font-family: inherit;
 }
+
+.btn-nav:active { transform: scale(0.97); }
 
 .btn-prev {
   background: var(--gray-100);
@@ -368,14 +416,19 @@ body {
   background: var(--blue);
   color: var(--white);
   margin-left: auto;
+  box-shadow: 0 2px 8px rgba(26,86,219,.25);
 }
 
-.btn-next:hover:not(.disabled) { background: var(--blue-dk); }
+.btn-next:hover:not(.disabled) {
+  background: var(--blue-dk);
+  box-shadow: 0 4px 14px rgba(26,86,219,.35);
+}
 
 .btn-next.disabled {
   background: var(--gray-200);
   color: var(--gray-400);
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .question-card.unanswered {
@@ -499,7 +552,6 @@ body {
   text-align: right;
 }
 
-
 .submit-status {
   font-size: 0.82rem;
   font-weight: 500;
@@ -526,9 +578,11 @@ body {
 }
 
 .field-label {
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   font-weight: 600;
   color: var(--gray-600);
+  text-transform: uppercase;
+  letter-spacing: .06em;
 }
 
 .field-input {
@@ -538,11 +592,17 @@ body {
   font-size: 0.95rem;
   color: var(--gray-800);
   background: var(--gray-50);
-  transition: border-color .15s;
+  transition: border-color .15s, box-shadow .15s, background .15s;
   outline: none;
+  font-family: inherit;
 }
 
-.field-input:focus { border-color: var(--blue); background: var(--white); }
+.field-input:focus {
+  border-color: var(--blue);
+  background: var(--white);
+  box-shadow: 0 0 0 3px rgba(26,86,219,.12);
+}
+
 .field-input.input-invalid { border-color: var(--red); }
 
 .field-hint {
@@ -572,7 +632,11 @@ body {
   border-radius: 8px;
   cursor: pointer;
   background: var(--gray-50);
-  transition: border-color .15s, background .15s;
+  transition: border-color .15s, background .15s, box-shadow .15s;
+}
+
+.exam-type-option:hover:not(.selected) {
+  border-color: var(--gray-400);
 }
 
 .exam-type-option input[type="radio"] { display: none; }
@@ -592,6 +656,7 @@ body {
 .exam-type-option.selected {
   border-color: var(--blue);
   background: #dbeafe;
+  box-shadow: 0 0 0 3px rgba(26,86,219,.10);
 }
 
 .exam-type-option.selected strong { color: var(--blue-dk); }
@@ -774,10 +839,13 @@ body {
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background .2s;
+  transition: background .2s, transform .1s, box-shadow .2s;
+  box-shadow: 0 2px 8px rgba(26,86,219,.25);
+  font-family: inherit;
 }
 
-.btn-begin:hover { background: var(--blue-dk); }
+.btn-begin:hover  { background: var(--blue-dk); box-shadow: 0 4px 14px rgba(26,86,219,.35); }
+.btn-begin:active { transform: scale(0.97); }
 
 /* ═══════════════════════════════════════
    PRIVACY CHECKBOX
@@ -842,13 +910,12 @@ body {
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background .2s, color .2s;
+  transition: background .2s, color .2s, transform .1s;
+  font-family: inherit;
 }
 
-.btn-pdf:hover {
-  background: var(--blue);
-  color: var(--white);
-}
+.btn-pdf:hover  { background: var(--blue); color: var(--white); }
+.btn-pdf:active { transform: scale(0.97); }
 
 .btn-restart {
   display: block;
@@ -861,11 +928,14 @@ body {
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background .2s;
+  transition: background .2s, transform .1s, box-shadow .2s;
   margin: 0;
+  box-shadow: 0 2px 8px rgba(26,86,219,.25);
+  font-family: inherit;
 }
 
-.btn-restart:hover { background: var(--blue-dk); }
+.btn-restart:hover  { background: var(--blue-dk); box-shadow: 0 4px 14px rgba(26,86,219,.35); }
+.btn-restart:active { transform: scale(0.97); }
 
 /* ═══════════════════════════════════════
    CORPORATE FOOTER

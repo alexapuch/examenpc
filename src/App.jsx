@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { sections } from './data/examData';
 import RegisterScreen from './components/RegisterScreen';
 import WelcomeScreen from './components/WelcomeScreen';
@@ -21,6 +21,17 @@ function generateFolio(examType) {
 
 export default function App() {
   const [phase, setPhase] = useState(PHASE.REGISTER);
+  const headerRef = useRef(null);
+
+  useEffect(() => {
+    function onScroll() {
+      if (headerRef.current) {
+        headerRef.current.classList.toggle('scrolled', window.scrollY > 4);
+      }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
   const [userInfo, setUserInfo] = useState(null);
   const [currentSection, setCurrentSection] = useState(0);
   const [answers, setAnswers] = useState({});
@@ -109,7 +120,7 @@ export default function App() {
 
   return (
     <div className="app">
-      <header className="brand-header">
+      <header className="brand-header" ref={headerRef}>
         <span className="brand-logo">S</span>
         <span className="brand-name">SEPRISA <span className="brand-seg">SEGURIDAD</span></span>
       </header>
