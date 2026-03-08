@@ -15,14 +15,21 @@ export default function App() {
   const [userInfo, setUserInfo] = useState(null);
   const [currentSection, setCurrentSection] = useState(0);
   const [answers, setAnswers] = useState({});
-  const [defaultExamType, setDefaultExamType] = useState('inicial');
+  const [defaultExamType, setDefaultExamType] = useState(() => {
+    try {
+      const today = new Date().toISOString().slice(0, 10);
+      const saved = JSON.parse(localStorage.getItem(SAVED_PROGRESS_KEY) || 'null');
+      if (saved && saved.date === today && saved.examType) return saved.examType;
+    } catch {}
+    return 'inicial';
+  });
 
   // Persist exam progress while in exam phase
   useEffect(() => {
     if (phase !== PHASE.EXAM) return;
     const today = new Date().toISOString().slice(0, 10);
-    localStorage.setItem(SAVED_PROGRESS_KEY, JSON.stringify({ answers, currentSection, date: today }));
-  }, [answers, currentSection, phase]);
+    localStorage.setItem(SAVED_PROGRESS_KEY, JSON.stringify({ answers, currentSection, date: today, examType: userInfo?.examType }));
+  }, [answers, currentSection, phase, userInfo]);
 
   // Warn before leaving mid-exam
   useEffect(() => {
