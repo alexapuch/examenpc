@@ -93,6 +93,11 @@ export default function App() {
 
   return (
     <div className="app">
+      <header className="brand-header">
+        <span className="brand-logo">S</span>
+        <span className="brand-name">SEPRISA <span className="brand-seg">SEGURIDAD</span></span>
+      </header>
+
       {phase === PHASE.REGISTER && (
         <RegisterScreen onStart={handleStart} defaultExamType={defaultExamType} />
       )}

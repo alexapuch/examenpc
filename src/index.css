@@ -2,10 +2,11 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --blue:    #2563eb;
-  --blue-dk: #1d4ed8;
-  --green:   #16a34a;
+  --blue:    #1a56db;
+  --blue-dk: #1e40af;
   --red:     #dc2626;
+  --red-dk:  #b91c1c;
+  --green:   #16a34a;
   --gray-50: #f9fafb;
   --gray-100:#f3f4f6;
   --gray-200:#e5e7eb;
@@ -21,7 +22,7 @@ html { font-size: 16px; }
 
 body {
   font-family: 'Segoe UI', system-ui, sans-serif;
-  background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 50%, #e0f2fe 100%);
+  background: linear-gradient(150deg, #dbeafe 0%, #f0f4ff 45%, #fee2e2 100%);
   min-height: 100vh;
   color: var(--gray-800);
   line-height: 1.6;
@@ -30,7 +31,44 @@ body {
 /* ── App shell ── */
 .app {
   min-height: 100vh;
-  padding: 24px 16px 48px;
+  padding: 0 16px 48px;
+}
+
+/* ── Brand header ── */
+.brand-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 24px;
+  background: linear-gradient(90deg, var(--blue-dk) 0%, var(--blue) 60%, var(--red-dk) 100%);
+  color: var(--white);
+  margin: 0 -16px 28px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.18);
+}
+
+.brand-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--red-dk);
+  font-size: 1.1rem;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+.brand-name {
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.brand-seg {
+  color: #fca5a5;
 }
 
 /* ═══════════════════════════════════════
@@ -62,6 +100,8 @@ body {
   font-weight: 700;
   color: var(--blue-dk);
   margin-bottom: 8px;
+  border-left: 4px solid var(--red);
+  padding-left: 12px;
 }
 
 .start-subtitle {
@@ -179,6 +219,8 @@ body {
   font-size: 1.4rem;
   font-weight: 700;
   color: var(--blue-dk);
+  border-left: 4px solid var(--red);
+  padding-left: 10px;
 }
 
 .section-description {

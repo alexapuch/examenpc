@@ -69,7 +69,7 @@ export default function RegisterScreen({ onStart, defaultExamType = 'inicial' })
     <div className="start-screen">
       <div className="start-card">
         <div className="start-header">
-          <h1>Examen de Seguridad y Prevención</h1>
+          <h1>Examen de Evaluación</h1>
           <p className="start-subtitle">Complete sus datos para comenzar — {totalQuestions} preguntas</p>
         </div>
 
