@@ -104,7 +104,7 @@ export default function ResultScreen({ answers, userInfo, onRestart }) {
         )}
 
         <button className="btn-restart" onClick={onRestart}>
-          {userInfo.examType === 'inicial' ? 'Siguiente examen' : 'Nuevo examen'}
+          {userInfo.examType === 'inicial' ? 'Siguiente examen' : 'Volver al inicio'}
         </button>
       </div>
     </div>
