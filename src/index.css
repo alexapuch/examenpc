@@ -23,7 +23,6 @@ html { font-size: 16px; }
 body {
   font-family: 'Segoe UI', system-ui, sans-serif;
   background: linear-gradient(150deg, #dbeafe 0%, #f0f4ff 45%, #fee2e2 100%);
-  background-attachment: fixed;
   min-height: 100vh;
   color: var(--gray-800);
   line-height: 1.6;
