@@ -1,14 +1,23 @@
 import { useState, useEffect } from 'react';
 import { sections } from './data/examData';
 import RegisterScreen from './components/RegisterScreen';
+import WelcomeScreen from './components/WelcomeScreen';
 import SectionExam from './components/SectionExam';
 import ResultScreen from './components/ResultScreen';
+import Footer from './components/Footer';
 
-const PHASE = { REGISTER: 'register', EXAM: 'exam', RESULT: 'result' };
+const PHASE = { REGISTER: 'register', WELCOME: 'welcome', EXAM: 'exam', RESULT: 'result' };
 
 const SAVED_USER_KEY = 'examenpc_user';
 const SAVED_PROGRESS_KEY = 'examenpc_progress';
 const COMPLETED_KEY = 'examenpc_completed';
+
+function generateFolio(examType) {
+  const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  const prefix = examType === 'final' ? 'SEP-F' : 'SEP-I';
+  const rand = Math.random().toString(36).toUpperCase().slice(2, 6);
+  return `${prefix}-${date}-${rand}`;
+}
 
 export default function App() {
   const [phase, setPhase] = useState(PHASE.REGISTER);
@@ -41,8 +50,10 @@ export default function App() {
 
   function handleStart(info) {
     const today = new Date().toISOString().slice(0, 10);
+    const folio = generateFolio(info.examType);
+    const fullInfo = { ...info, folio };
     localStorage.setItem(SAVED_USER_KEY, JSON.stringify({ name: info.name, curp: info.curp, company: info.company, date: today }));
-    setUserInfo(info);
+    setUserInfo(fullInfo);
 
     try {
       const saved = JSON.parse(localStorage.getItem(SAVED_PROGRESS_KEY) || 'null');
@@ -52,7 +63,12 @@ export default function App() {
       }
     } catch { /* ignore */ }
 
+    setPhase(PHASE.WELCOME);
+  }
+
+  function handleBeginExam() {
     setPhase(PHASE.EXAM);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function handleAnswer(questionId, optionIndex) {
@@ -102,6 +118,10 @@ export default function App() {
         <RegisterScreen onStart={handleStart} defaultExamType={defaultExamType} />
       )}
 
+      {phase === PHASE.WELCOME && (
+        <WelcomeScreen userInfo={userInfo} onBegin={handleBeginExam} />
+      )}
+
       {phase === PHASE.EXAM && (
         <SectionExam
           section={sections[currentSection]}
@@ -119,6 +139,8 @@ export default function App() {
       {phase === PHASE.RESULT && (
         <ResultScreen answers={answers} userInfo={userInfo} onRestart={handleRestart} />
       )}
+
+      <Footer />
     </div>
   );
 }

@@ -18,6 +18,7 @@ export default function RegisterScreen({ onStart, defaultExamType = 'inicial' })
   })();
   const [form, setForm] = useState({ name: saved?.name || '', curp: saved?.curp || '', company: saved?.company || '', examType: defaultExamType });
   const [errors, setErrors] = useState({});
+  const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const totalQuestions = sections.reduce((sum, s) => sum + s.questions.length, 0);
 
   function validate() {
@@ -32,6 +33,7 @@ export default function RegisterScreen({ onStart, defaultExamType = 'inicial' })
       e.curp = 'CURP inválida — verifica el formato';
     }
     if (!form.company.trim()) e.company = 'La empresa es obligatoria';
+    if (!privacyAccepted) e.privacy = 'Debes aceptar el aviso de privacidad para continuar';
 
     if (!e.curp) {
       const today = new Date().toISOString().slice(0, 10);
@@ -144,8 +146,28 @@ export default function RegisterScreen({ onStart, defaultExamType = 'inicial' })
             </div>
           </div>
 
+          <div className="field-group privacy-group">
+            <label className="privacy-label">
+              <input
+                type="checkbox"
+                checked={privacyAccepted}
+                onChange={e => {
+                  setPrivacyAccepted(e.target.checked);
+                  if (errors.privacy) setErrors(prev => ({ ...prev, privacy: undefined }));
+                }}
+              />
+              <span>
+                He leído y acepto el{' '}
+                <strong>aviso de privacidad</strong> de SEPRISA SEGURIDAD.
+                Mis datos serán tratados de forma confidencial y utilizados únicamente
+                para fines de evaluación interna.
+              </span>
+            </label>
+            {errors.privacy && <span className="field-error-msg">{errors.privacy}</span>}
+          </div>
+
           <button type="submit" className="btn-start">
-            Comenzar examen →
+            Continuar →
           </button>
         </form>
       </div>
