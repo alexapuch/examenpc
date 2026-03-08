@@ -7,6 +7,9 @@ export default function Footer() {
         <span className="corp-footer-sep">·</span>
         <span>Uso interno · © {year}</span>
       </div>
+      <div className="corp-footer-legal">
+        Los datos proporcionados en esta evaluación son tratados de manera confidencial conforme al aviso de privacidad de la empresa.
+      </div>
     </footer>
   );
 }
