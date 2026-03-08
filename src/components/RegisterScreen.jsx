@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { sections, PASSING_SCORE } from '../data/examData';
+import PrivacyModal from './PrivacyModal';
 
 // Formato oficial CURP mexicana: 18 caracteres
 const CURP_REGEX = /^[A-Z]{4}\d{6}[HM][A-Z0-9]{7}$/;
@@ -19,6 +20,7 @@ export default function RegisterScreen({ onStart, defaultExamType = 'inicial' })
   const [form, setForm] = useState({ name: saved?.name || '', curp: saved?.curp || '', company: saved?.company || '', examType: defaultExamType });
   const [errors, setErrors] = useState({});
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
   const totalQuestions = sections.reduce((sum, s) => sum + s.questions.length, 0);
 
   function validate() {
@@ -68,6 +70,8 @@ export default function RegisterScreen({ onStart, defaultExamType = 'inicial' })
   }
 
   return (
+    <>
+    {showPrivacy && <PrivacyModal onClose={() => setShowPrivacy(false)} />}
     <div className="start-screen">
       <div className="start-card">
         <div className="start-header">
@@ -158,7 +162,14 @@ export default function RegisterScreen({ onStart, defaultExamType = 'inicial' })
               />
               <span>
                 He leído y acepto el{' '}
-                <strong>aviso de privacidad</strong> de SEPRISA SEGURIDAD.
+                <button
+                  type="button"
+                  className="privacy-link"
+                  onClick={() => setShowPrivacy(true)}
+                >
+                  aviso de privacidad
+                </button>
+                {' '}de SEPRISA SEGURIDAD.
                 Mis datos serán tratados de forma confidencial y utilizados únicamente
                 para fines de evaluación interna.
               </span>
@@ -172,5 +183,6 @@ export default function RegisterScreen({ onStart, defaultExamType = 'inicial' })
         </form>
       </div>
     </div>
+    </>
   );
 }
