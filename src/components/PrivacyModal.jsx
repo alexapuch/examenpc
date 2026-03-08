@@ -9,7 +9,8 @@ export default function PrivacyModal({ onClose }) {
 
         <div className="modal-body">
           <p className="privacy-responsible">
-            <strong>SEPRISA SEGURIDAD</strong>, con domicilio en la República Mexicana,
+            <strong>SEPRISA SEGURIDAD</strong>, con domicilio en Av. 105 Esq. 5 Sur,
+            Col. Ejidal Mza 38 Lote 10, Playa del Carmen, Quintana Roo, México,
             es responsable del tratamiento de sus datos personales conforme a la
             <em> Ley Federal de Protección de Datos Personales en Posesión de los
             Particulares (LFPDPPP)</em> y su Reglamento.
