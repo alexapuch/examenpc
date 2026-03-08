@@ -11,14 +11,16 @@ export default function WelcomeScreen({ userInfo, onBegin }) {
         <h2 className="welcome-title">Instrucciones generales</h2>
         <p className="welcome-desc">{examDesc}</p>
 
-        <ul className="welcome-rules">
-          <li>Lee cada pregunta con atención antes de seleccionar tu respuesta.</li>
-          <li>No podrás avanzar a la siguiente sección si dejas preguntas sin contestar.</li>
-          <li>Puedes regresar a la sección anterior para modificar tus respuestas.</li>
-          <li>Una vez que entregues el examen no se podrán modificar las respuestas.</li>
-          <li>Está prohibido el uso de cualquier material de apoyo durante la evaluación.</li>
-          <li>Si cierras el navegador, tu progreso se guardará y podrás continuar hoy.</li>
-        </ul>
+        {userInfo.examType === 'inicial' && (
+          <ul className="welcome-rules">
+            <li>Lee cada pregunta con atención antes de seleccionar tu respuesta.</li>
+            <li>No podrás avanzar a la siguiente sección si dejas preguntas sin contestar.</li>
+            <li>Puedes regresar a la sección anterior para modificar tus respuestas.</li>
+            <li>Una vez que entregues el examen no se podrán modificar las respuestas.</li>
+            <li>Está prohibido el uso de cualquier material de apoyo durante la evaluación.</li>
+            <li>Si cierras el navegador, tu progreso se guardará y podrás continuar hoy.</li>
+          </ul>
+        )}
 
         <div className="welcome-meta">
           <div className="welcome-meta-item">
