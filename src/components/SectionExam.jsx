@@ -1,12 +1,21 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import QuestionCard from './QuestionCard';
 
 export default function SectionExam({ section, sectionIndex, totalSections, answers, onAnswer, onNext, onPrev, isFirst, isLast }) {
+  const [attempted, setAttempted] = useState(false);
+
   useEffect(() => {
+    setAttempted(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [sectionIndex]);
+
   const unanswered = section.questions.filter((q) => answers[q.id] === undefined).length;
   const canAdvance = unanswered === 0;
+
+  function handleNext() {
+    if (!canAdvance) { setAttempted(true); return; }
+    onNext();
+  }
 
   return (
     <div className="section-exam">
@@ -39,6 +48,7 @@ export default function SectionExam({ section, sectionIndex, totalSections, answ
             totalQuestions={section.questions.length}
             selected={answers[question.id]}
             onSelect={onAnswer}
+            highlight={attempted && answers[question.id] === undefined}
           />
         ))}
       </div>
@@ -58,9 +68,8 @@ export default function SectionExam({ section, sectionIndex, totalSections, answ
         )}
 
         <button
-          className={`btn-nav btn-next ${!canAdvance ? 'disabled' : ''}`}
-          onClick={onNext}
-          disabled={!canAdvance}
+          className="btn-nav btn-next"
+          onClick={handleNext}
         >
           {isLast ? 'Ver resultados →' : 'Siguiente sección →'}
         </button>

@@ -1,10 +1,11 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { sections, PASSING_SCORE } from '../data/examData';
 
 const SCRIPT_URL = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
 
 export default function ResultScreen({ answers, userInfo, onRestart }) {
   const submitted = useRef(false);
+  const [submitStatus, setSubmitStatus] = useState(SCRIPT_URL ? 'sending' : 'idle');
 
   const sectionResults = sections.map((section) => {
     const correct = section.questions.filter(
@@ -37,9 +38,9 @@ export default function ResultScreen({ answers, userInfo, onRestart }) {
         total: totalQuestions,
         passed: improved,
       }),
-    }).catch(() => {
-      // silently ignore — result already shown to user
-    });
+    })
+      .then(() => setSubmitStatus('sent'))
+      .catch(() => setSubmitStatus('error'));
   }, []);
 
   const examLabel = userInfo.examType === 'inicial' ? 'Examen Inicial' : 'Examen Final';
@@ -93,6 +94,14 @@ export default function ResultScreen({ answers, userInfo, onRestart }) {
             </div>
           ))}
         </div>
+
+        {submitStatus !== 'idle' && (
+          <p className={`submit-status submit-status--${submitStatus}`}>
+            {submitStatus === 'sending' && 'Guardando resultados...'}
+            {submitStatus === 'sent'    && 'Resultados guardados correctamente.'}
+            {submitStatus === 'error'   && 'No se pudieron guardar los resultados (sin conexión).'}
+          </p>
+        )}
 
         <button className="btn-restart" onClick={onRestart}>
           Nuevo examen

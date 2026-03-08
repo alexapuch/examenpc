@@ -1,6 +1,6 @@
-export default function QuestionCard({ question, questionNumber, totalQuestions, selected, onSelect }) {
+export default function QuestionCard({ question, questionNumber, totalQuestions, selected, onSelect, highlight }) {
   return (
-    <div className="question-card">
+    <div className={`question-card${highlight ? ' unanswered' : ''}`}>
       <div className="question-header">
         <span className="question-number">Pregunta {questionNumber} de {totalQuestions}</span>
       </div>
