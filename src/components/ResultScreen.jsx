@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import confetti from 'canvas-confetti';
 import { sections, PASSING_SCORE } from '../data/examData';
 
 const SCRIPT_URL = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
@@ -20,6 +21,18 @@ export default function ResultScreen({ answers, userInfo, onRestart }) {
   const totalQuestions = sectionResults.reduce((sum, s) => sum + s.total, 0);
   const overallPercentage = Math.round((totalCorrect / totalQuestions) * 100);
   const improved = overallPercentage >= PASSING_SCORE;
+
+  useEffect(() => {
+    if (userInfo.examType !== 'final') return;
+    const duration = 3000;
+    const end = Date.now() + duration;
+    const frame = () => {
+      confetti({ particleCount: 6, angle: 60, spread: 55, origin: { x: 0 } });
+      confetti({ particleCount: 6, angle: 120, spread: 55, origin: { x: 1 } });
+      if (Date.now() < end) requestAnimationFrame(frame);
+    };
+    frame();
+  }, []);
 
   useEffect(() => {
     if (submitted.current || !SCRIPT_URL) return;
