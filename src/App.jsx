@@ -8,6 +8,7 @@ const PHASE = { REGISTER: 'register', EXAM: 'exam', RESULT: 'result' };
 
 const SAVED_USER_KEY = 'examenpc_user';
 const SAVED_PROGRESS_KEY = 'examenpc_progress';
+const COMPLETED_KEY = 'examenpc_completed';
 
 export default function App() {
   const [phase, setPhase] = useState(PHASE.REGISTER);
@@ -56,6 +57,10 @@ export default function App() {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       localStorage.removeItem(SAVED_PROGRESS_KEY);
+      const today = new Date().toISOString().slice(0, 10);
+      const completed = JSON.parse(localStorage.getItem(COMPLETED_KEY) || '[]').filter(e => e.date === today);
+      completed.push({ curp: userInfo.curp, examType: userInfo.examType, date: today });
+      localStorage.setItem(COMPLETED_KEY, JSON.stringify(completed));
       setPhase(PHASE.RESULT);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }

@@ -5,6 +5,7 @@ import { sections, PASSING_SCORE } from '../data/examData';
 const CURP_REGEX = /^[A-Z]{4}\d{6}[HM][A-Z0-9]{7}$/;
 
 const SAVED_USER_KEY = 'examenpc_user';
+const COMPLETED_KEY = 'examenpc_completed';
 
 export default function RegisterScreen({ onStart }) {
   const saved = (() => {
@@ -31,6 +32,21 @@ export default function RegisterScreen({ onStart }) {
       e.curp = 'CURP inválida — verifica el formato';
     }
     if (!form.company.trim()) e.company = 'La empresa es obligatoria';
+
+    if (!e.curp) {
+      const today = new Date().toISOString().slice(0, 10);
+      const completed = JSON.parse(localStorage.getItem(COMPLETED_KEY) || '[]');
+      const alreadyDone = completed.some(
+        entry => entry.curp === form.curp.trim().toUpperCase() &&
+                 entry.examType === form.examType &&
+                 entry.date === today
+      );
+      if (alreadyDone) {
+        const label = form.examType === 'inicial' ? 'Examen Inicial' : 'Examen Final';
+        e.curp = `Ya realizaste el ${label} hoy. Contacta al administrador si es un error.`;
+      }
+    }
+
     return e;
   }
 
