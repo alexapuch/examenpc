@@ -1424,6 +1424,147 @@ html.dark .section-answers-count {
 .score-pass { color: var(--green); }
 .score-fail { color: var(--red); }
 
+/* ── Admin delete controls ── */
+.btn-delete-selected {
+  padding: 7px 14px;
+  background: #fff7ed;
+  color: #c2410c;
+  border: 1px solid #fed7aa;
+  border-radius: 7px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background .2s, border-color .2s;
+}
+
+.btn-delete-selected:hover { background: #ffedd5; border-color: #fb923c; }
+
+.btn-delete-all {
+  padding: 7px 14px;
+  background: #fef2f2;
+  color: var(--red);
+  border: 1px solid #fecaca;
+  border-radius: 7px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background .2s, border-color .2s;
+}
+
+.btn-delete-all:hover:not(:disabled) { background: #fee2e2; border-color: #f87171; }
+.btn-delete-all:disabled { opacity: .4; cursor: not-allowed; }
+
+/* ── Checkbox column ── */
+.admin-th-check, .admin-td-check {
+  width: 36px;
+  padding-left: 12px !important;
+  padding-right: 4px !important;
+}
+
+.admin-checkbox {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--blue);
+  cursor: pointer;
+}
+
+.row-selected td { background: #eff6ff !important; }
+
+html.dark .row-selected td { background: #1e3a8a22 !important; }
+
+html.dark .btn-delete-selected {
+  background: #431407;
+  color: #fb923c;
+  border-color: #7c2d12;
+}
+
+html.dark .btn-delete-all {
+  background: #450a0a;
+  color: #f87171;
+  border-color: #7f1d1d;
+}
+
+/* ── Confirm delete overlay ── */
+.admin-confirm-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(15,23,42,.55);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius);
+  z-index: 10;
+}
+
+.admin-confirm-box {
+  background: var(--white);
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.25);
+  padding: 28px 32px;
+  max-width: 340px;
+  width: 90%;
+  text-align: center;
+}
+
+.admin-confirm-msg {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--gray-800);
+  margin-bottom: 6px;
+}
+
+.admin-confirm-sub {
+  font-size: 0.8rem;
+  color: var(--gray-400);
+  margin-bottom: 20px;
+}
+
+.admin-confirm-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.btn-admin-cancel {
+  padding: 9px 20px;
+  background: var(--gray-100);
+  color: var(--gray-800);
+  border: none;
+  border-radius: 7px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background .2s;
+}
+
+.btn-admin-cancel:hover { background: var(--gray-200); }
+
+.btn-admin-delete-confirm {
+  padding: 9px 20px;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background .2s;
+}
+
+.btn-admin-delete-confirm:hover { background: var(--red-dk); }
+
+html.dark .admin-confirm-box {
+  background: #1e293b;
+}
+
+/* ── Admin modal needs position:relative for overlay ── */
+.admin-modal-box { position: relative; }
+
 /* ── Responsive ── */
 @media (max-width: 500px) {
   .start-card, .section-header, .question-card, .section-nav, .result-card {
