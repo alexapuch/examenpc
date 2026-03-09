@@ -4,6 +4,7 @@ import RegisterScreen from './components/RegisterScreen';
 import WelcomeScreen from './components/WelcomeScreen';
 import SectionExam from './components/SectionExam';
 import ResultScreen from './components/ResultScreen';
+import AdminPanel from './components/AdminPanel';
 import Footer from './components/Footer';
 
 const PHASE = { REGISTER: 'register', WELCOME: 'welcome', EXAM: 'exam', RESULT: 'result' };
@@ -21,7 +22,14 @@ function generateFolio(examType) {
 
 export default function App() {
   const [phase, setPhase] = useState(PHASE.REGISTER);
+  const [showAdmin, setShowAdmin] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => localStorage.getItem('examenpc_dark') === '1');
   const headerRef = useRef(null);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', darkMode);
+    localStorage.setItem('examenpc_dark', darkMode ? '1' : '0');
+  }, [darkMode]);
 
   useEffect(() => {
     function onScroll() {
@@ -93,8 +101,22 @@ export default function App() {
     } else {
       localStorage.removeItem(SAVED_PROGRESS_KEY);
       const today = new Date().toISOString().slice(0, 10);
+      const totalCorrect = sections.reduce((sum, s) => sum + s.questions.filter(q => answers[q.id] === q.correct).length, 0);
+      const totalQuestions = sections.reduce((sum, s) => sum + s.questions.length, 0);
+      const score = Math.round((totalCorrect / totalQuestions) * 100);
       const completed = JSON.parse(localStorage.getItem(COMPLETED_KEY) || '[]').filter(e => e.date === today);
-      completed.push({ curp: userInfo.curp, examType: userInfo.examType, date: today });
+      completed.push({
+        curp: userInfo.curp,
+        name: userInfo.name,
+        company: userInfo.company,
+        examType: userInfo.examType,
+        date: today,
+        score,
+        correct: totalCorrect,
+        total: totalQuestions,
+        folio: userInfo.folio,
+        time: new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' }),
+      });
       localStorage.setItem(COMPLETED_KEY, JSON.stringify(completed));
       setPhase(PHASE.RESULT);
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -120,9 +142,18 @@ export default function App() {
 
   return (
     <div className="app">
+      {showAdmin && <AdminPanel onClose={() => setShowAdmin(false)} />}
       <header className="brand-header" ref={headerRef}>
         <span className="brand-logo">S</span>
         <span className="brand-name">SEPRISA <span className="brand-seg">SEGURIDAD</span></span>
+        <div className="header-actions">
+          <button className="btn-dark-toggle" onClick={() => setDarkMode(d => !d)} title={darkMode ? 'Modo claro' : 'Modo oscuro'}>
+            {darkMode ? '☼' : '☾'}
+          </button>
+          <button className="btn-admin-link" onClick={() => setShowAdmin(true)}>
+            Admin
+          </button>
+        </div>
       </header>
 
       {phase === PHASE.REGISTER && (

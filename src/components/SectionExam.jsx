@@ -10,6 +10,7 @@ export default function SectionExam({ section, sectionIndex, totalSections, answ
   }, [sectionIndex]);
 
   const unanswered = section.questions.filter((q) => answers[q.id] === undefined).length;
+  const answered = section.questions.length - unanswered;
   const canAdvance = unanswered === 0;
 
   function handleNext() {
@@ -23,6 +24,9 @@ export default function SectionExam({ section, sectionIndex, totalSections, answ
       <div className="section-header">
         <div className="section-progress-meta">
           <span className="section-progress-label">Sección {sectionIndex + 1} de {totalSections}</span>
+          <span className="section-answers-count">
+            {answered}/{section.questions.length} respondidas
+          </span>
           <span className="section-progress-pct">{Math.round(((sectionIndex + 1) / totalSections) * 100)}%</span>
         </div>
         <div className="section-title-row">
