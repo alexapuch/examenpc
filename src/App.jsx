@@ -104,7 +104,7 @@ export default function App() {
       const totalCorrect = sections.reduce((sum, s) => sum + s.questions.filter(q => answers[q.id] === q.correct).length, 0);
       const totalQuestions = sections.reduce((sum, s) => sum + s.questions.length, 0);
       const score = Math.round((totalCorrect / totalQuestions) * 100);
-      const completed = JSON.parse(localStorage.getItem(COMPLETED_KEY) || '[]').filter(e => e.date === today);
+      const completed = JSON.parse(localStorage.getItem(COMPLETED_KEY) || '[]');
       completed.push({
         curp: userInfo.curp,
         name: userInfo.name,
