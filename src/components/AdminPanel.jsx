@@ -53,6 +53,16 @@ export default function AdminPanel({ onClose }) {
 
   const [selected, setSelected] = useState(new Set());
   const [confirmDelete, setConfirmDelete] = useState(null); // 'selected' | 'all'
+  
+  const [requireCurp, setRequireCurp] = useState(() => {
+    return localStorage.getItem('examenpc_require_curp') !== '0'; // Default to true
+  });
+
+  function toggleRequireCurp() {
+    const newVal = !requireCurp;
+    setRequireCurp(newVal);
+    localStorage.setItem('examenpc_require_curp', newVal ? '1' : '0');
+  }
 
   useEffect(() => {
     if (!authenticated) return;
@@ -302,6 +312,37 @@ export default function AdminPanel({ onClose }) {
               <span className="admin-count">
                 {loading ? 'Cargando datos...' : `${results.length} examen${results.length !== 1 ? 'es' : ''}`}
               </span>
+
+              {/* CURP Toggle */}
+              <div className="admin-curp-toggle-wrap" style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0,0,0,0.05)', padding: '4px 10px', borderRadius: '20px', marginLeft: '8px' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: '600', color: '#64748b' }}>Solicitar CURP</span>
+                <button 
+                  onClick={toggleRequireCurp}
+                  style={{ 
+                    position: 'relative', 
+                    width: '32px', 
+                    height: '18px', 
+                    borderRadius: '9px', 
+                    background: requireCurp ? '#3b82f6' : '#cbd5e1',
+                    border: 'none',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                    padding: 0
+                  }}
+                >
+                  <div style={{ 
+                    position: 'absolute', 
+                    top: '2px', 
+                    left: requireCurp ? '16px' : '2px', 
+                    width: '14px', 
+                    height: '14px', 
+                    background: 'white', 
+                    borderRadius: '50%', 
+                    transition: 'all 0.2s',
+                    boxShadow: '0 1px 2px rgba(0,0,0,0.1)'
+                  }} />
+                </button>
+              </div>
               {!useCloud && selected.size > 0 && (
                 <button className="btn-delete-selected" onClick={() => setConfirmDelete('selected')}>
                   Eliminar seleccionados ({selected.size})

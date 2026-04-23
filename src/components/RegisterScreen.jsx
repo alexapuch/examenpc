@@ -21,23 +21,28 @@ export default function RegisterScreen({ onStart, defaultExamType = 'inicial' })
   const [errors, setErrors] = useState({});
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [showPrivacy, setShowPrivacy] = useState(false);
+  
+  const requireCurp = localStorage.getItem('examenpc_require_curp') !== '0';
   const totalQuestions = sections.reduce((sum, s) => sum + s.questions.length, 0);
 
   function validate() {
     const e = {};
     if (!form.name.trim()) e.name = 'El nombre es obligatorio';
-    const curp = form.curp.trim().toUpperCase();
-    if (!curp) {
-      e.curp = 'La CURP es obligatoria';
-    } else if (curp.length !== 18) {
-      e.curp = `La CURP debe tener 18 caracteres (actualmente: ${curp.length})`;
-    } else if (!CURP_REGEX.test(curp)) {
-      e.curp = 'CURP inválida — verifica el formato';
+    
+    if (requireCurp) {
+      const curp = form.curp.trim().toUpperCase();
+      if (!curp) {
+        e.curp = 'La CURP es obligatoria';
+      } else if (curp.length !== 18) {
+        e.curp = `La CURP debe tener 18 caracteres (actualmente: ${curp.length})`;
+      } else if (!CURP_REGEX.test(curp)) {
+        e.curp = 'CURP inválida — verifica el formato';
+      }
     }
     if (!form.company.trim()) e.company = 'La empresa es obligatoria';
     if (!privacyAccepted) e.privacy = 'Debes aceptar el aviso de privacidad para continuar';
 
-    if (!e.curp) {
+    if (requireCurp && !e.curp) {
       const today = new Date().toISOString().slice(0, 10);
       const completed = JSON.parse(localStorage.getItem(COMPLETED_KEY) || '[]');
       const alreadyDone = completed.some(
@@ -92,19 +97,21 @@ export default function RegisterScreen({ onStart, defaultExamType = 'inicial' })
             {errors.name && <span className="field-error-msg">{errors.name}</span>}
           </div>
 
-          <div className="field-group">
-            <label className="field-label">CURP</label>
-            <input
-              className={`field-input${errors.curp ? ' input-invalid' : ''}`}
-              type="text"
-              placeholder="AAAA000000HXXXXX0"
-              maxLength={18}
-              value={form.curp}
-              onChange={e => handleChange('curp', e.target.value.toUpperCase())}
-            />
-            <span className="field-hint">18 caracteres · {form.curp.length}/18</span>
-            {errors.curp && <span className="field-error-msg">{errors.curp}</span>}
-          </div>
+          {requireCurp && (
+            <div className="field-group">
+              <label className="field-label">CURP</label>
+              <input
+                className={`field-input${errors.curp ? ' input-invalid' : ''}`}
+                type="text"
+                placeholder="AAAA000000HXXXXX0"
+                maxLength={18}
+                value={form.curp}
+                onChange={e => handleChange('curp', e.target.value.toUpperCase())}
+              />
+              <span className="field-hint">18 caracteres · {form.curp.length}/18</span>
+              {errors.curp && <span className="field-error-msg">{errors.curp}</span>}
+            </div>
+          )}
 
           <div className="field-group">
             <label className="field-label">Empresa</label>
