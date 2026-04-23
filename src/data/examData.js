@@ -1,0 +1,267 @@
+export const PASSING_SCORE = 50; // umbral diagnóstico: más de la mitad correctas = mejoró
+
+export const sections = [
+  {
+    id: "primeros-auxilios",
+    title: "Primeros Auxilios",
+    icon: "🩺",
+    description: "Conocimientos básicos de atención de emergencias médicas.",
+    questions: [
+      {
+        id: "pa-1",
+        text: "¿Cuál es el primer paso al llegar a una escena de emergencia?",
+        options: [
+          "Iniciar RCP de inmediato",
+          "Garantizar la seguridad del lugar y del rescatista",
+          "Llamar a un médico",
+          "Mover al herido a un lugar cómodo",
+        ],
+        correct: 1,
+      },
+      {
+        id: "pa-2",
+        text: "¿Cuántas compresiones por minuto se recomiendan durante la RCP en adultos?",
+        options: ["60–80", "80–100", "100–120", "120–140"],
+        correct: 2,
+      },
+      {
+        id: "pa-3",
+        text: "¿Qué significa la sigla R.E.A.?",
+        options: [
+          "Rescate, Evaluación, Asistencia",
+          "Reanimación Cardiopulmonar Avanzada",
+          "Resucitación de Emergencias Agudas",
+          "Respuesta de Emergencia Automática",
+        ],
+        correct: 0,
+      },
+      {
+        id: "pa-4",
+        text: "Ante una hemorragia externa severa, la primera acción es:",
+        options: [
+          "Aplicar un torniquete de inmediato",
+          "Elevar la extremidad y limpiar la herida",
+          "Hacer presión directa sobre la herida con un apósito limpio",
+          "Dar agua al paciente",
+        ],
+        correct: 2,
+      },
+      {
+        id: "pa-5",
+        text: "¿Qué posición se recomienda para una persona inconsciente que respira normalmente?",
+        options: [
+          "Posición de shock (piernas elevadas)",
+          "Posición lateral de seguridad (PLS)",
+          "Decúbito prono (boca abajo)",
+          "Sentado con la cabeza inclinada hacia adelante",
+        ],
+        correct: 1,
+      },
+      {
+        id: "pa-6",
+        text: "Para tratar una quemadura leve de primer grado, se debe:",
+        options: [
+          "Aplicar mantequilla o cremas caseras",
+          "Cubrir con vendaje apretado",
+          "Enfriar con agua fría corriente durante 10–20 minutos",
+          "Reventar las ampollas para liberar el líquido",
+        ],
+        correct: 2,
+      },
+      {
+        id: "pa-7",
+        text: "¿Cuándo se debe usar un DEA (Desfibrilador Externo Automático)?",
+        options: [
+          "Cuando la persona tiene dolor en el pecho",
+          "Cuando la persona no responde y no respira normalmente",
+          "Cuando la persona está consciente pero desorientada",
+          "Sólo personal médico puede usarlo",
+        ],
+        correct: 1,
+      },
+      {
+        id: "pa-8",
+        text: "Ante una persona que se está asfixiando (consciente), se aplica:",
+        options: [
+          "Palmadas en la espalda únicamente",
+          "Maniobra de Heimlich (compresiones abdominales)",
+          "RCP completa",
+          "Introducir los dedos en la boca para extraer el objeto",
+        ],
+        correct: 1,
+      },
+    ],
+  },
+  {
+    id: "extintores",
+    title: "Uso y Manejo de Extintores",
+    icon: "🧯",
+    description: "Clasificación de incendios y operación correcta de extintores.",
+    questions: [
+      {
+        id: "ex-1",
+        text: "¿Cuál es la regla mnemotécnica para operar un extintor?",
+        options: ["RACE", "PASS", "STOP", "FIRE"],
+        correct: 1,
+      },
+      {
+        id: "ex-2",
+        text: "¿Qué tipo de extintor se usa para incendios eléctricos (Clase C)?",
+        options: [
+          "Agua a presión",
+          "Espuma AFFF",
+          "CO₂ o polvo químico seco",
+          "Halon (sólo este tipo)",
+        ],
+        correct: 2,
+      },
+      {
+        id: "ex-3",
+        text: "La clase de fuego 'B' corresponde a:",
+        options: [
+          "Materiales sólidos combustibles (madera, papel)",
+          "Líquidos inflamables (gasolina, aceite)",
+          "Equipos eléctricos energizados",
+          "Metales combustibles",
+        ],
+        correct: 1,
+      },
+      {
+        id: "ex-4",
+        text: "¿A qué distancia aproximada se debe iniciar la descarga del extintor?",
+        options: ["0.5 m", "1–3 m", "5–7 m", "Más de 10 m"],
+        correct: 1,
+      },
+      {
+        id: "ex-5",
+        text: "La 'A' en la regla PASS significa:",
+        options: [
+          "Activar la alarma",
+          "Apuntar la boquilla a la base del fuego",
+          "Abrir la válvula lentamente",
+          "Alejarse si el fuego crece",
+        ],
+        correct: 1,
+      },
+      {
+        id: "ex-6",
+        text: "¿Con qué frecuencia mínima se deben inspeccionar los extintores?",
+        options: ["Diariamente", "Mensualmente", "Cada 6 meses", "Anualmente"],
+        correct: 1,
+      },
+      {
+        id: "ex-7",
+        text: "Un extintor de agua NO debe usarse en incendios de:",
+        options: [
+          "Madera o papel",
+          "Tejidos y telas",
+          "Equipos eléctricos o líquidos inflamables",
+          "Cartón y pasto",
+        ],
+        correct: 2,
+      },
+      {
+        id: "ex-8",
+        text: "¿Qué indica el manómetro de un extintor cuando la aguja está en zona verde?",
+        options: [
+          "Está vacío y necesita recarga",
+          "Está sobre-presurizado (peligro)",
+          "Tiene la presión operativa adecuada",
+          "Sólo funciona para fuegos tipo A",
+        ],
+        correct: 2,
+      },
+    ],
+  },
+  {
+    id: "evacuacion",
+    title: "Evacuación",
+    icon: "🚨",
+    description: "Procedimientos y protocolos para evacuación de instalaciones.",
+    questions: [
+      {
+        id: "ev-1",
+        text: "¿Quién es el responsable de coordinar la evacuación en una empresa?",
+        options: [
+          "El empleado con más antigüedad",
+          "El Jefe de Brigada / Coordinador de Emergencias",
+          "El guardia de seguridad",
+          "Cualquier voluntario",
+        ],
+        correct: 1,
+      },
+      {
+        id: "ev-2",
+        text: "Durante una evacuación, ¿qué debe hacer con los ascensores?",
+        options: [
+          "Usarlos para bajar rápido",
+          "Usarlos sólo si hay personas con movilidad reducida",
+          "NO usarlos; utilizar siempre las escaleras de emergencia",
+          "Usarlos si el incendio está lejos del elevador",
+        ],
+        correct: 2,
+      },
+      {
+        id: "ev-3",
+        text: "¿Cuál es el punto de reunión (muster point)?",
+        options: [
+          "La cafetería del edificio",
+          "La oficina del gerente",
+          "El lugar seguro y predefinido fuera del edificio donde se reúne el personal",
+          "El estacionamiento más cercano",
+        ],
+        correct: 2,
+      },
+      {
+        id: "ev-4",
+        text: "Al salir durante una evacuación por incendio, se debe:",
+        options: [
+          "Recoger objetos personales importantes antes de salir",
+          "Cerrar las puertas al salir para retardar la propagación del fuego",
+          "Dejar las puertas abiertas para facilitar el escape de otros",
+          "Correr lo más rápido posible sin mirar atrás",
+        ],
+        correct: 1,
+      },
+      {
+        id: "ev-5",
+        text: "Si hay humo en el pasillo durante una evacuación, se debe:",
+        options: [
+          "Respirar profundo y cruzar rápido",
+          "Caminar agachado cerca del suelo donde el aire es más limpio",
+          "Esperar en la oficina a que el humo se disipe",
+          "Abrir las ventanas para ventilar",
+        ],
+        correct: 1,
+      },
+      {
+        id: "ev-6",
+        text: "¿Con qué frecuencia mínima se recomienda realizar simulacros de evacuación?",
+        options: ["Cada mes", "Una vez al año", "Cada 5 años", "Solo al ingresar un nuevo empleado"],
+        correct: 1,
+      },
+      {
+        id: "ev-7",
+        text: "Si al tocar una puerta durante la evacuación se siente caliente, se debe:",
+        options: [
+          "Abrirla de inmediato y salir corriendo",
+          "NO abrirla; buscar otra ruta de salida o sellar la puerta y señalizar desde la ventana",
+          "Abrirla lentamente para ver cuánto fuego hay",
+          "Esperar detrás de la puerta hasta que lleguen los bomberos",
+        ],
+        correct: 1,
+      },
+      {
+        id: "ev-8",
+        text: "¿Qué debe hacerse DESPUÉS de la evacuación en el punto de reunión?",
+        options: [
+          "Regresar al edificio a buscar pertenencias",
+          "Pasar lista para verificar que todo el personal esté presente",
+          "Llamar a familiares desde dentro del edificio",
+          "Esperar instrucciones sin organizarse",
+        ],
+        correct: 1,
+      },
+    ],
+  },
+];
