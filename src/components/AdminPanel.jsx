@@ -1,25 +1,21 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 
 const ADMIN_PASSWORD = 'seprisa2024';
 const COMPLETED_KEY = 'examenpc_completed';
+const SCRIPT_URL = import.meta.env.VITE_GOOGLE_SCRIPT_URL;
 
-function loadAllResults() {
+function loadLocalResults() {
   return JSON.parse(localStorage.getItem(COMPLETED_KEY) || '[]');
 }
 
-function loadResults(date) {
-  return loadAllResults().filter(r => r.date === date);
-}
-
-function saveResults(date, updated) {
-  const others = loadAllResults().filter(r => r.date !== date);
+function saveLocalResults(date, updated) {
+  const others = loadLocalResults().filter(r => r.date !== date);
   localStorage.setItem(COMPLETED_KEY, JSON.stringify([...others, ...updated]));
 }
 
 /** Get sorted unique dates that have results */
-function getAvailableDates() {
-  const all = loadAllResults();
-  const dates = [...new Set(all.map(r => r.date).filter(Boolean))];
+function getAvailableDates(allData) {
+  const dates = [...new Set(allData.map(r => r.date).filter(Boolean))];
   dates.sort((a, b) => b.localeCompare(a)); // newest first
   return dates;
 }
@@ -49,11 +45,65 @@ export default function AdminPanel({ onClose }) {
   const [authenticated, setAuthenticated] = useState(false);
   const [error, setError] = useState('');
   const [selectedDate, setSelectedDate] = useState(todayStr);
+  
+  // Data states
+  const [allData, setAllData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [useCloud, setUseCloud] = useState(false); // To show if we are online
+
   const [selected, setSelected] = useState(new Set());
   const [confirmDelete, setConfirmDelete] = useState(null); // 'selected' | 'all'
-  const [results, setResults] = useState(() => loadResults(todayStr));
 
-  const availableDates = useMemo(() => getAvailableDates(), [results]);
+  useEffect(() => {
+    if (!authenticated) return;
+
+    async function fetchCloudData() {
+      if (!SCRIPT_URL) {
+        setAllData(loadLocalResults());
+        return;
+      }
+      
+      setLoading(true);
+      try {
+        const res = await fetch(SCRIPT_URL);
+        const json = await res.json();
+        
+        const mapped = json.map(row => {
+           const d = new Date(row['Fecha']);
+           const offset = d.getTimezoneOffset() * 60000;
+           const localISODate = (new Date(d.getTime() - offset)).toISOString().slice(0, 10);
+           
+           return {
+             name: row['Nombre'] || '',
+             curp: row['Curp'] || '',
+             company: row['Empresa'] || '',
+             examType: row['Tipo de Examen']?.includes('Inicial') ? 'inicial' : 'final',
+             date: localISODate,
+             score: typeof row['Calificación'] === 'number' ? Math.round(row['Calificación'] * 100) : parseInt(row['Calificación'] || 0, 10),
+             correct: row['Correctas/Total'] ? parseInt(row['Correctas/Total'].split('/')[0], 10) : 0,
+             total: row['Correctas/Total'] ? parseInt(row['Correctas/Total'].split('/')[1], 10) : 24,
+             time: d.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' }),
+             folio: '—'
+           };
+        });
+        
+        setAllData(mapped);
+        setUseCloud(true);
+      } catch (err) {
+        console.error("Error fetching from Google Sheets:", err);
+        // Fallback to local storage if network fails
+        setAllData(loadLocalResults());
+        setUseCloud(false);
+      } finally {
+        setLoading(false);
+      }
+    }
+    
+    fetchCloudData();
+  }, [authenticated]);
+
+  const availableDates = useMemo(() => getAvailableDates(allData), [allData]);
+  const results = useMemo(() => allData.filter(r => r.date === selectedDate), [allData, selectedDate]);
 
   const allChecked = results.length > 0 && selected.size === results.length;
   const someChecked = selected.size > 0 && !allChecked;
@@ -61,7 +111,6 @@ export default function AdminPanel({ onClose }) {
 
   function changeDate(newDate) {
     setSelectedDate(newDate);
-    setResults(loadResults(newDate));
     setSelected(new Set());
     setConfirmDelete(null);
   }
@@ -88,16 +137,28 @@ export default function AdminPanel({ onClose }) {
   }
 
   function deleteSelected() {
+    if (useCloud) {
+      alert("No puedes borrar registros cuando estás conectado a Google Sheets. Borra las filas directamente en tu documento de Google Sheets.");
+      setConfirmDelete(null);
+      return;
+    }
     const updated = results.filter((_, i) => !selected.has(i));
-    saveResults(selectedDate, updated);
-    setResults(updated);
+    saveLocalResults(selectedDate, updated);
+    
+    // Refresh local state
+    setAllData(loadLocalResults());
     setSelected(new Set());
     setConfirmDelete(null);
   }
 
   function deleteAll() {
-    saveResults(selectedDate, []);
-    setResults([]);
+    if (useCloud) {
+      alert("No puedes borrar registros cuando estás conectado a Google Sheets. Borra las filas directamente en tu documento de Google Sheets.");
+      setConfirmDelete(null);
+      return;
+    }
+    saveLocalResults(selectedDate, []);
+    setAllData(loadLocalResults());
     setSelected(new Set());
     setConfirmDelete(null);
   }
@@ -109,7 +170,7 @@ export default function AdminPanel({ onClose }) {
       r.curp || '',
       r.company || '',
       r.examType === 'inicial' ? 'Inicial' : 'Final',
-      r.score !== undefined ? `${r.score}%` : '',
+      r.score !== undefined && !isNaN(r.score) ? `${r.score}%` : '',
       r.correct !== undefined ? r.correct : '',
       r.total !== undefined ? r.total : '',
       r.folio || '',
@@ -130,14 +191,19 @@ export default function AdminPanel({ onClose }) {
   return (
     <div className="modal-backdrop" onClick={e => e.target === e.currentTarget && onClose()}>
       <div className="modal-box admin-modal-box">
-        <div className="modal-header">
+        <div className="modal-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h2>Panel de administración</h2>
+          {authenticated && useCloud && (
+            <span className="cloud-badge" style={{ fontSize: '0.8rem', background: '#ecfdf5', color: '#059669', padding: '4px 8px', borderRadius: '4px', fontWeight: 'bold', marginLeft: 'auto', marginRight: '16px' }}>
+              ☁️ Conectado a Sheets
+            </span>
+          )}
           <button className="modal-close" onClick={onClose}>✕</button>
         </div>
 
         {!authenticated ? (
           <div className="admin-login">
-            <p className="admin-login-desc">Ingresa la contraseña para ver los resultados.</p>
+            <p className="admin-login-desc">Ingresa la contraseña para ver los resultados globales.</p>
             <form onSubmit={handleLogin} className="admin-login-form">
               <input
                 className={`field-input${error ? ' input-invalid' : ''}`}
@@ -233,37 +299,45 @@ export default function AdminPanel({ onClose }) {
             )}
 
             <div className="admin-toolbar">
-              <span className="admin-count">{results.length} examen{results.length !== 1 ? 'es' : ''}</span>
-              {selected.size > 0 && (
+              <span className="admin-count">
+                {loading ? 'Cargando datos...' : `${results.length} examen${results.length !== 1 ? 'es' : ''}`}
+              </span>
+              {!useCloud && selected.size > 0 && (
                 <button className="btn-delete-selected" onClick={() => setConfirmDelete('selected')}>
                   Eliminar seleccionados ({selected.size})
                 </button>
               )}
-              <button className="btn-csv" onClick={exportCSV} disabled={results.length === 0}>
+              <button className="btn-csv" onClick={exportCSV} disabled={results.length === 0 || loading}>
                 ⬇ Exportar CSV
               </button>
-              <button className="btn-delete-all" onClick={() => setConfirmDelete('all')} disabled={results.length === 0}>
-                Eliminar todo
-              </button>
+              {!useCloud && (
+                <button className="btn-delete-all" onClick={() => setConfirmDelete('all')} disabled={results.length === 0 || loading}>
+                  Eliminar todo
+                </button>
+              )}
             </div>
 
             <div className="admin-table-wrap">
-              {results.length === 0 ? (
+              {loading ? (
+                <p className="admin-empty">Descargando datos desde la nube...</p>
+              ) : results.length === 0 ? (
                 <p className="admin-empty">No hay resultados registrados en esta fecha.</p>
               ) : (
                 <table className="admin-table">
                   <thead>
                     <tr>
-                      <th className="admin-th-check">
-                        <input
-                          type="checkbox"
-                          className="admin-checkbox"
-                          checked={allChecked}
-                          ref={el => { if (el) el.indeterminate = someChecked; }}
-                          onChange={toggleAll}
-                          title="Seleccionar todos"
-                        />
-                      </th>
+                      {!useCloud && (
+                        <th className="admin-th-check">
+                          <input
+                            type="checkbox"
+                            className="admin-checkbox"
+                            checked={allChecked}
+                            ref={el => { if (el) el.indeterminate = someChecked; }}
+                            onChange={toggleAll}
+                            title="Seleccionar todos"
+                          />
+                        </th>
+                      )}
                       <th>Nombre</th>
                       <th>CURP</th>
                       <th>Empresa</th>
@@ -275,14 +349,16 @@ export default function AdminPanel({ onClose }) {
                   <tbody>
                     {results.map((r, i) => (
                       <tr key={i} className={selected.has(i) ? 'row-selected' : ''}>
-                        <td className="admin-td-check">
-                          <input
-                            type="checkbox"
-                            className="admin-checkbox"
-                            checked={selected.has(i)}
-                            onChange={() => toggleSelect(i)}
-                          />
-                        </td>
+                        {!useCloud && (
+                          <td className="admin-td-check">
+                            <input
+                              type="checkbox"
+                              className="admin-checkbox"
+                              checked={selected.has(i)}
+                              onChange={() => toggleSelect(i)}
+                            />
+                          </td>
+                        )}
                         <td>{r.name || '—'}</td>
                         <td className="admin-curp">{r.curp}</td>
                         <td>{r.company || '—'}</td>
@@ -293,7 +369,7 @@ export default function AdminPanel({ onClose }) {
                         </td>
                         <td>
                           <span className={`admin-score ${r.score >= 70 ? 'score-pass' : 'score-fail'}`}>
-                            {r.score !== undefined ? `${r.score}%` : '—'}
+                            {r.score !== undefined && !isNaN(r.score) ? `${r.score}%` : '—'}
                           </span>
                         </td>
                         <td>{r.time || '—'}</td>
